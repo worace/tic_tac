@@ -1,3 +1,5 @@
+require "matrix"
+
 module TicTacToe
   class Application
     def run
@@ -24,15 +26,15 @@ module TicTacToe
     attr_accessor :current_round
 
     def ended?
-      false
+      won || cat
     end
 
     def won
-
+      VictoryDetector.new(board).won?
     end
 
     def cat
-
+      false
     end
 
     def current_round
@@ -72,7 +74,8 @@ module TicTacToe
     end
 
     def squares
-      @squares ||= (1..9).each_slice(3).map { |s| s.map { |index| Square.new(index) } }
+      @squares ||= Matrix.build(3) { |r, c| Square.new(c + r*3 + 1) }
+      #@squares ||= (1..9).each_slice(3).map { |s| s.map { |index| Square.new(index) } }
     end
 
     def to_s
@@ -84,7 +87,7 @@ module TicTacToe
     end
 
     def square_for_move(move)
-      squares.flatten[move-1]
+      squares.to_a.flatten[move-1]
     end
 
     def x_s
@@ -119,6 +122,38 @@ module TicTacToe
       value.to_s.downcase == "o"
     end
   end
-end
 
-TicTacToe::Application.new.run
+  class VictoryDetector
+    attr_reader :board
+    def initialize(board)
+      @board = board
+    end
+
+    def rows; [[1,2,3], [4,5,6], [7,8,9]]; end
+    def cols; [[1,4,7], [2,5,8], [3,6,9]]; end
+    def diags; [[1,5,9], [3,5,7]]; end
+
+    def won?
+      row_victory? || col_victory? || diag_victory?
+    end
+
+    def row_victory?
+      board.squares.row_vectors.any? do |row|
+        row.count == 3 &&
+        row.all? { |r| r.x? } ||
+        row.all? { |r| r.o? }
+      end
+      #rows.any? { |r| board.squares.select { |square| r.include?(square.index) }.all? { |square| square.x? } } ||
+      #rows.any? { |r| board.squares.select { |square| r.include?(square.index) }.all? { |square| square.y? } }
+    end
+
+    def col_victory?
+      false
+    end
+
+    def diag_victory?
+      false
+    end
+  end
+end
+#TicTacToe::Application.new.run
