@@ -9,8 +9,25 @@ RSpec.describe TicTacToe::Game do
   it "knows when a player has won on a row" do
     (1..3).each { |i| game.board.play(i, "X") }
     expect(game.ended?).to be(true)
-    (1..3).each { |i| game.board.play(i, "O") }
+    game = TicTacToe::Game.new
+    (4..6).each { |i| game.board.play(i, "O") }
     expect(game.ended?).to be(true)
+  end
+
+  it "knows when a player has won on a column" do
+    [1,4,7].each { |i| game.board.play(i, "X")  }
+    expect(game.ended?).to be(true)
+    game = TicTacToe::Game.new
+    [2,5,8].each { |i| game.board.play(i, "O")  }
+    expect(game.ended?).to be(true)
+  end
+
+  it "knows when a player has won on a diagonal" do
+    [1,5,9].each { |i| game.board.play(i, "X")  }
+    expect(game.ended?).to be(true)
+    #game = TicTacToe::Game.new
+    #[3,5,7].each { |i| game.board.play(i, "O")  }
+    #expect(game.ended?).to be(true)
   end
 
   it "doesnt think an un-won game is ended" do

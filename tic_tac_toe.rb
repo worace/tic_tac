@@ -138,21 +138,26 @@ module TicTacToe
     end
 
     def row_victory?
-      board.squares.row_vectors.any? do |row|
-        row.count == 3 &&
-        row.all? { |r| r.x? } ||
-        row.all? { |r| r.o? }
-      end
-      #rows.any? { |r| board.squares.select { |square| r.include?(square.index) }.all? { |square| square.x? } } ||
-      #rows.any? { |r| board.squares.select { |square| r.include?(square.index) }.all? { |square| square.y? } }
+      board.squares.row_vectors.any? { |v| victory_vector?(v) }
     end
 
     def col_victory?
-      false
+      board.squares.column_vectors.any? { |v| victory_vector?(v) }
     end
 
     def diag_victory?
-      false
+      lower = []
+      upper = []
+      board.squares.transpose.each(:lower) { |s| lower << s }
+      board.squares.transpose.each(:upper) { |s| upper << s }
+      diagonal = lower & upper
+      victory_vector?(diagonal)
+    end
+
+    def victory_vector?(vector)
+        vector.count == 3 &&
+        vector.all? { |r| r.x? } ||
+        vector.all? { |r| r.o? }
     end
   end
 end
