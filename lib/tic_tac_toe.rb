@@ -99,7 +99,7 @@ module TicTacToe
     end
 
     def available?(move)
-      square_for_move(move).available?
+      !!square_for_move(move) && square_for_move(move).available?
     end
 
     def square_for_move(move)

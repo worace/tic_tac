@@ -8,6 +8,19 @@ RSpec.describe TicTacToe::Square do
   it "has assigned index" do
     expect(square.index).to be(1)
   end
+
+  it "knows if it is available" do
+    expect(square.available?).to be(true)
+    square.value = "O"
+    expect(square.available?).to be(false)
+  end
+end
+
+RSpec.describe TicTacToe::Square do
+  let (:board) { TicTacToe::Board.new }
+  it "knows invalid squares are unavailable" do
+    expect(board.available?(111111)).to be(false)
+  end
 end
 
 RSpec.describe TicTacToe::Game do
