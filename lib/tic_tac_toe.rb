@@ -3,22 +3,29 @@ require "matrix"
 module TicTacToe
   class Application
     def run
-      display_launch_options
+      while true
+        puts "n: New Game"
+        puts "q: Quit"
+        selection = gets.chomp
+        case selection.chars.first.to_s.downcase
+        when "q"
+          puts "See you later!"
+          break
+        when "n"
+          play_game
+        else
+          puts "sorry didnt get that, try these:"
+        end
+      end
+      return 0
     end
 
-    def display_launch_options
-      puts "n: New Game"
-      puts "q: Quit"
-      selection = gets.chomp
-      case selection.chars.first.downcase
-      when "q"
-        #quit
-      when "n"
-        Game.new.play
-      else
-        puts "sorry didnt get that, try these:"
-        display_launch_options
+    def play_game
+      game = Game.new
+      while !game.ended?
+        game.play_turn
       end
+      puts game.game_over_message
     end
   end
 
@@ -34,7 +41,7 @@ module TicTacToe
     end
 
     def cat?
-      false
+      CatDetector.new(board).cat?
     end
 
     def current_round
@@ -45,22 +52,19 @@ module TicTacToe
       ["X", "O"][current_round % 2]
     end
 
-    def play
-      while !ended?
-        puts "Turn #{current_round}. #{current_player} is up. Current board is:\n\n"
-        puts board
-        puts "\nPlay a square by entering the number of the square you would like to play.\n"
+    def play_turn
+      puts "Turn #{current_round}. #{current_player} is up. Current board is:\n\n"
+      puts board
+      puts "\nPlay a square by entering the number of the square you would like to play.\n"
 
-        move = gets.chomp.to_i
-        if board.available?(move)
-          puts "you selected: #{move}"
-          board.play(move, current_player)
-          self.current_round = current_round.to_i + 1
-        else
-          puts "#{move} is not available"
-        end
+      move = gets.chomp.to_i
+      if board.available?(move)
+        puts "you selected: #{move}"
+        board.play(move, current_player)
+        self.current_round = current_round.to_i + 1
+      else
+        puts "#{move} is not available"
       end
-      puts game_over_message
     end
 
     def game_over_message
@@ -69,8 +73,11 @@ module TicTacToe
         puts "final position was:"
         puts board
       else
-        puts "game tied!"
+        puts "C-A-T! Game Tied!"
+        puts "final position was:"
+        puts board
       end
+      puts "\n\nPlay again?\n"
     end
 
     def board
@@ -138,35 +145,39 @@ module TicTacToe
       @board = board
     end
 
-    def rows; [[1,2,3], [4,5,6], [7,8,9]]; end
-    def cols; [[1,4,7], [2,5,8], [3,6,9]]; end
-    def diags; [[1,5,9], [3,5,7]]; end
-
     def won?
-      row_victory? || col_victory? || diag_victory?
-    end
-
-    def row_victory?
-      board.squares.row_vectors.any? { |v| victory_vector?(v) }
-    end
-
-    def col_victory?
-      board.squares.column_vectors.any? { |v| victory_vector?(v) }
-    end
-
-    def diag_victory?
-      board.squares.diagonal_vectors.any? { |v| victory_vector?(v) }
+      board.squares.vectors_with_diagonals.any? { |v| victory_vector?(v) }
     end
 
     def victory_vector?(vector)
         vector.count == 3 &&
-        vector.all? { |r| r.x? } ||
-        vector.all? { |r| r.o? }
+        vector.all? { |square| square.x? } ||
+        vector.all? { |square| square.o? }
+    end
+  end
+
+  class CatDetector
+    attr_reader :board
+    def initialize(board)
+      @board = board
+    end
+
+    def cat?
+      board.squares.vectors_with_diagonals.all? { |v| blocked_vector?(v) }
+    end
+
+    def blocked_vector?(vector)
+      vector.to_a.map(&:value).compact.uniq.count > 1
     end
   end
 end
 
 class Matrix
+
+  def vectors_with_diagonals
+    row_vectors + column_vectors + diagonal_vectors
+  end
+
   def diagonal_vectors
     [first_diagonal, reverse_diagonal]
   end
