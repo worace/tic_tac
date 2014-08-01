@@ -9,7 +9,7 @@ module TicTacToe
     def display_launch_options
       puts "n: New Game"
       puts "q: Quit"
-      selection = gets
+      selection = gets.chomp
       case selection.chars.first.downcase
       when "q"
         #quit
@@ -26,14 +26,14 @@ module TicTacToe
     attr_accessor :current_round
 
     def ended?
-      won || cat
+      won? || cat?
     end
 
-    def won
+    def won?
       VictoryDetector.new(board).won?
     end
 
-    def cat
+    def cat?
       false
     end
 
@@ -60,12 +60,14 @@ module TicTacToe
           puts "#{move} is not available"
         end
       end
-      puts game_ended_message
+      puts game_over_message
     end
 
     def game_over_message
-      if game.won?
+      if won?
         puts "you win!"
+        puts "final position was:"
+        puts board
       else
         puts "game tied!"
       end
@@ -181,4 +183,3 @@ class Matrix
     Matrix[*row_vectors.reverse].first_diagonal
   end
 end
-#TicTacToe::Application.new.run
