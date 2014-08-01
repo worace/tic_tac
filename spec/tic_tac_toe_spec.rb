@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + "../../tic_tac_toe"
+require File.dirname(__FILE__) + "../../lib/tic_tac_toe"
 RSpec.describe TicTacToe::Game do
   let (:game) { TicTacToe::Game.new }
   it "plays a letter for a given square" do
@@ -33,6 +33,19 @@ RSpec.describe TicTacToe::Game do
   it "doesnt think an un-won game is ended" do
     game.board.play(1, "X")
     expect(game.ended?).to be(false)
+    game.board.play(2, "Y")
+    game.board.play(3, "Y")
+    expect(game.ended?).to be(false)
+  end
+
+  it "displays the board with to_s" do
+    display = " 1 | 2 | 3 
+____________
+ 4 | 5 | 6 
+____________
+ 7 | 8 | 9 "
+    expect(game.board.to_s).to eq(display)
+
   end
 end
 

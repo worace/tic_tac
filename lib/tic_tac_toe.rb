@@ -60,7 +60,15 @@ module TicTacToe
           puts "#{move} is not available"
         end
       end
-      #puts game_ended_message
+      puts game_ended_message
+    end
+
+    def game_over_message
+      if game.won?
+        puts "you win!"
+      else
+        puts "game tied!"
+      end
     end
 
     def board
@@ -75,11 +83,10 @@ module TicTacToe
 
     def squares
       @squares ||= Matrix.build(3) { |r, c| Square.new(c + r*3 + 1) }
-      #@squares ||= (1..9).each_slice(3).map { |s| s.map { |index| Square.new(index) } }
     end
 
     def to_s
-      squares.map { |row| row.map(&:to_s).join("|") }.join("\n____________\n")
+      squares.row_vectors.map { |row| row.to_a.map(&:to_s).join("|") }.join("\n____________\n")
     end
 
     def available?(move)
