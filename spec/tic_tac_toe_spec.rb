@@ -25,13 +25,29 @@ RSpec.describe TicTacToe::Game do
   it "knows when a player has won on a diagonal" do
     [1,5,9].each { |i| game.board.play(i, "X")  }
     expect(game.ended?).to be(true)
-    #game = TicTacToe::Game.new
-    #[3,5,7].each { |i| game.board.play(i, "O")  }
-    #expect(game.ended?).to be(true)
+    game = TicTacToe::Game.new
+    [3,5,7].each { |i| game.board.play(i, "O")  }
+    expect(game.ended?).to be(true)
   end
 
   it "doesnt think an un-won game is ended" do
     game.board.play(1, "X")
     expect(game.ended?).to be(false)
+  end
+end
+
+RSpec.describe Matrix do
+  let(:matrix) { Matrix.build(3) { |r, c| c + r*3 + 1 } }
+
+  it "gives 1,5,9 for #first_diagonal" do
+    expect(matrix.first_diagonal).to eq([1,5,9])
+  end
+
+  it "gives 3,5,7 for #reverse_diagonal" do
+    expect(matrix.reverse_diagonal).to eq([7,5,3])
+  end
+
+  it "gives both for #diagonal_vectors" do
+    expect(matrix.diagonal_vectors).to eq([[1,5,9], [7,5,3]])
   end
 end

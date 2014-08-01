@@ -146,12 +146,7 @@ module TicTacToe
     end
 
     def diag_victory?
-      lower = []
-      upper = []
-      board.squares.transpose.each(:lower) { |s| lower << s }
-      board.squares.transpose.each(:upper) { |s| upper << s }
-      diagonal = lower & upper
-      victory_vector?(diagonal)
+      board.squares.diagonal_vectors.any? { |v| victory_vector?(v) }
     end
 
     def victory_vector?(vector)
@@ -159,6 +154,24 @@ module TicTacToe
         vector.all? { |r| r.x? } ||
         vector.all? { |r| r.o? }
     end
+  end
+end
+
+class Matrix
+  def diagonal_vectors
+    [first_diagonal, reverse_diagonal]
+  end
+
+  def first_diagonal
+    lower = []
+    upper = []
+    each(:lower) { |s| lower << s }
+    each(:upper) { |s| upper << s }
+    lower & upper
+  end
+
+  def reverse_diagonal
+    Matrix[*row_vectors.reverse].first_diagonal
   end
 end
 #TicTacToe::Application.new.run
