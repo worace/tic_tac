@@ -52,6 +52,10 @@ module TicTacToe
       ["X", "O"][current_round % 2]
     end
 
+    def last_player
+      (["X", "O"] - [current_player]).first
+    end
+
     def play_turn
       puts "Turn #{current_round}. #{current_player} is up. Current board is:\n\n"
       puts board
@@ -69,7 +73,7 @@ module TicTacToe
 
     def game_over_message
       if won?
-        puts "you win!"
+        puts "#{last_player}'s win!"
         puts "final position was:"
         puts board
       else
