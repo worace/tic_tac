@@ -1,6 +1,6 @@
 require "matrix"
 
-module TicTacToe
+module TicTac
   class Application
     def run
       while true

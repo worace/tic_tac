@@ -1,6 +1,6 @@
-require File.dirname(__FILE__) + "../../lib/tic_tac_toe"
-RSpec.describe TicTacToe::Square do
-  let (:square) { TicTacToe::Square.new(1) }
+require "tic_tac"
+RSpec.describe TicTac::Square do
+  let (:square) { TicTac::Square.new(1) }
   it "has nil value by default" do
     expect(square.value).to be(nil)
   end
@@ -16,15 +16,15 @@ RSpec.describe TicTacToe::Square do
   end
 end
 
-RSpec.describe TicTacToe::Square do
-  let (:board) { TicTacToe::Board.new }
+RSpec.describe TicTac::Square do
+  let (:board) { TicTac::Board.new }
   it "knows invalid squares are unavailable" do
     expect(board.available?(111111)).to be(false)
   end
 end
 
-RSpec.describe TicTacToe::Game do
-  let (:game) { TicTacToe::Game.new }
+RSpec.describe TicTac::Game do
+  let (:game) { TicTac::Game.new }
   it "plays a letter for a given square" do
     game.board.play(1, "X")
     expect(game.board.square_for_move(1).value).to eq("X")
@@ -33,7 +33,7 @@ RSpec.describe TicTacToe::Game do
   it "knows when a player has won on a row" do
     (1..3).each { |i| game.board.play(i, "X") }
     expect(game.ended?).to be(true)
-    game = TicTacToe::Game.new
+    game = TicTac::Game.new
     (4..6).each { |i| game.board.play(i, "O") }
     expect(game.ended?).to be(true)
   end
@@ -41,7 +41,7 @@ RSpec.describe TicTacToe::Game do
   it "knows when a player has won on a column" do
     [1,4,7].each { |i| game.board.play(i, "X")  }
     expect(game.ended?).to be(true)
-    game = TicTacToe::Game.new
+    game = TicTac::Game.new
     [2,5,8].each { |i| game.board.play(i, "O")  }
     expect(game.ended?).to be(true)
   end
@@ -49,7 +49,7 @@ RSpec.describe TicTacToe::Game do
   it "knows when a player has won on a diagonal" do
     [1,5,9].each { |i| game.board.play(i, "X")  }
     expect(game.ended?).to be(true)
-    game = TicTacToe::Game.new
+    game = TicTac::Game.new
     [3,5,7].each { |i| game.board.play(i, "O")  }
     expect(game.ended?).to be(true)
   end
